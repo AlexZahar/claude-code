@@ -1,0 +1,148 @@
+{
+  "env": {
+    "ANTHROPIC_CUSTOM_HEADERS": "anthropic-beta: interleaved-thinking-2025-05-14",
+    "MAX_THINKING_TOKENS": "30000"
+  },
+  "permissions": {
+    "allow": [
+      "*"
+    ],
+    "deny": []
+  },
+  "model": "sonnet",
+  "enableAllProjectMcpServers": false,
+  "mcpServers": {
+    "multi-mcp-proxy": {
+      "url": "http://127.0.0.1:8080/sse",
+      "description": "Multi-MCP Proxy aggregating all MCP servers"
+    }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/boardlens-dev-startup-hook.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/mcp-session-hook.sh"
+          },
+          {
+            "type": "command", 
+            "command": "sh -c 'if ! ~/.claude/multi-mcp-service.sh status | grep -q \"✅ Running\"; then echo \"🚀 Starting Multi-MCP proxy...\"; ~/.claude/multi-mcp-service.sh start; fi'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Grep|Search|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=wrong-tool $HOME/.claude/serena-hooks.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=pre-edit $HOME/.claude/gemini-hooks.sh"
+          },
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=pre-edit $HOME/.claude/serena-hooks.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=pre-write $HOME/.claude/gemini-hooks.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "WebSearch|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=pre-websearch $HOME/.claude/documentation-hooks.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'if echo \"$TOOL_OUTPUT\" | grep -q \"successfully\"; then HOOK_TYPE=post-edit $HOME/.claude/gemini-hooks.sh; fi'"
+          },
+          {
+            "type": "command",
+            "command": "sh -c 'FILE=$(echo \"$TOOL_INPUT\" | jq -r .file_path 2>/dev/null); ACTION=\"edited\"; if echo \"$TOOL_NAME\" | grep -q \"Write\"; then ACTION=\"created\"; fi; $HOME/.claude/memory-subagent-request.sh \"[File $ACTION] $FILE\" normal'"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__puppeteer__mcp-puppeteer_screenshot",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/memory-subagent-request.sh \"Screenshot captured via Playwright\" normal"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'CMD=$(echo \"$TOOL_INPUT\" | jq -r .command 2>/dev/null); if echo \"$CMD\" | grep -qE \"npm test|jest|vitest|pytest\"; then HOOK_TYPE=test-run $HOME/.claude/gemini-hooks.sh; elif echo \"$CMD\" | grep -qE \"git commit\"; then HOOK_TYPE=commit $HOME/.claude/gemini-hooks.sh; fi'"
+          },
+          {
+            "type": "command",
+            "command": "sh -c 'CMD=$(echo \"$TOOL_INPUT\" | jq -r .command 2>/dev/null); EXIT_CODE=$(echo \"$TOOL_OUTPUT\" | grep -oE \"exit code: [0-9]+\" | grep -oE \"[0-9]+\" || echo \"0\"); PRIORITY=\"normal\"; if [ \"$EXIT_CODE\" != \"0\" ]; then PRIORITY=\"high\"; fi; $HOME/.claude/memory-subagent-request.sh \"[Command] $CMD (exit: $EXIT_CODE)\" $PRIORITY'"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"💡 Tip: Use 'gemini -p' for analysis or '~/.claude/graphiti-hook.sh search' for memories!\""
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/mcp-cleanup-hook.sh cleanup"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "/compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/compact-memory-hook.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "feedbackSurveyState": {
+    "lastShownTime": 1754031081665
+  },
+  "$schema": "https://json.schemastore.org/claude-code-settings.json"
+}

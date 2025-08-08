@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "ANTHROPIC_CUSTOM_HEADERS": "anthropic-beta: interleaved-thinking-2025-05-14",
+    "MAX_THINKING_TOKENS": "30000"
+  },
+  "permissions": {
+    "allow": [
+      "*"
+    ],
+    "deny": []
+  },
+  "model": "sonnet",
+  "enableAllProjectMcpServers": false,
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/boardlens-dev-startup-hook-multi.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/mcp-session-hook-multi.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Grep|Search|Glob|Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=wrong-tool $HOME/.claude/serena-hooks.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=pre-edit $HOME/.claude/gemini-hooks.sh"
+          },
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=pre-edit $HOME/.claude/serena-hooks.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=pre-write $HOME/.claude/gemini-hooks.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "WebSearch|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "HOOK_TYPE=pre-websearch $HOME/.claude/documentation-hooks.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'if echo \"$TOOL_OUTPUT\" | grep -q \"successfully\"; then HOOK_TYPE=post-edit $HOME/.claude/gemini-hooks.sh; fi'"
+          },
+          {
+            "type": "command",
+            "command": "sh -c 'FILE=$(echo \"$TOOL_INPUT\" | jq -r .file_path 2>/dev/null); ACTION=\"edited\"; if echo \"$TOOL_NAME\" | grep -q \"Write\"; then ACTION=\"created\"; fi; if [ -n \"$FILE\" ] && echo \"$TOOL_OUTPUT\" | grep -q \"successfully\"; then $HOME/.claude/graphiti-hook.sh file_edit \"$FILE\" \"$ACTION\" 2>&1 | head -1; fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'CMD=$(echo \"$TOOL_INPUT\" | jq -r .command 2>/dev/null); if echo \"$CMD\" | grep -qE \"npm test|jest|vitest|pytest\"; then HOOK_TYPE=test-run $HOME/.claude/gemini-hooks.sh; elif echo \"$CMD\" | grep -qE \"git commit\"; then HOOK_TYPE=commit $HOME/.claude/gemini-hooks.sh; fi'"
+          },
+          {
+            "type": "command",
+            "command": "sh -c 'CMD=$(echo \"$TOOL_INPUT\" | jq -r .command 2>/dev/null); EXIT_CODE=$(echo \"$TOOL_OUTPUT\" | grep -oE \"exit code: [0-9]+\" | grep -oE \"[0-9]+\" || echo \"0\"); if [ -n \"$CMD\" ] && ! echo \"$CMD\" | grep -qE \"^(ls|cd|pwd|echo|cat|which|clear)( |$)\"; then $HOME/.claude/graphiti-hook.sh command_run \"$CMD\" \"$EXIT_CODE\" 2>&1 | head -1; fi'"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"💡 Tip: Use 'gemini -p' for analysis or '~/.claude/graphiti-hook.sh search' for memories!\""
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/mcp-cleanup-hook-multi.sh cleanup"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "/compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/compact-memory-hook.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "/mcp-status",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/multi-mcp-service.sh status"
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "multi-mcp-proxy": {
+      "url": "http://127.0.0.1:8080/sse",
+      "description": "Multi-MCP Proxy aggregating all MCP servers",
+      "transport": {
+        "type": "sse"
+      }
+    }
+  },
+  "feedbackSurveyState": {
+    "lastShownTime": 1754049067901
+  }
+}

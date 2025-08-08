@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.claude.mcp-optimizer</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/zahar/.claude/mcp-optimizer.sh</string>
+        <string>monitor</string>
+    </array>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/zahar/.claude/mcp-optimizer.out.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/zahar/.claude/mcp-optimizer.err.log</string>
+    
+    <key>StartInterval</key>
+    <integer>300</integer>
+    
+    <key>ThrottleInterval</key>
+    <integer>60</integer>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/zahar/.local/bin</string>
+        <key>HOME</key>
+        <string>/Users/zahar</string>
+    </dict>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/zahar</string>
+    
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>2048</integer>
+    </dict>
+</dict>
+</plist>

@@ -1,0 +1,70 @@
+{
+  "batching": {
+    "enabled": true,
+    "window_seconds": 30,
+    "min_batch_size": 2,
+    "max_batch_size": 50
+  },
+  "filtering": {
+    "min_file_change_lines": 5,
+    "ignore_patterns": [
+      "*.log",
+      "*.tmp",
+      "__pycache__",
+      ".git",
+      "node_modules"
+    ],
+    "trivial_commands": [
+      "ls",
+      "cd",
+      "pwd",
+      "echo",
+      "cat",
+      "which",
+      "clear"
+    ]
+  },
+  "importance_rules": {
+    "high": [
+      "git commit",
+      "npm publish",
+      "deploy",
+      "migration",
+      "hotfix"
+    ],
+    "medium": [
+      "test",
+      "refactor",
+      "feature",
+      "npm install",
+      "pip install"
+    ],
+    "low": [
+      "style",
+      "typo",
+      "format",
+      "lint"
+    ]
+  },
+  "context_detection": {
+    "test_patterns": [
+      "test_",
+      "_test.py",
+      ".test.js",
+      "spec.js"
+    ],
+    "config_files": [
+      "package.json",
+      "requirements.txt",
+      "docker-compose.yml",
+      ".env"
+    ],
+    "important_dirs": [
+      "src",
+      "lib",
+      "api",
+      "core",
+      "components"
+    ]
+  }
+}

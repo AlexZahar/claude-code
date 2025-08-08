@@ -1,0 +1,153 @@
+# Claude Code Enhanced Configuration - .gitignore
+# Comprehensive ignore rules for sharing configuration safely
+
+# =============================================================================
+# LOGS AND DEBUG FILES
+# =============================================================================
+*.log
+*.debug
+*-debug.log
+*-startup.log
+*-session.log
+*-cleanup.log
+*-optimizer.log
+*-hooks.log
+logs/
+session-memories/*/
+shell-snapshots/
+workspace-memories/
+
+# =============================================================================
+# TEMPORARY AND CACHE FILES
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.dylib
+*.dll
+*.tmp
+*.temp
+*.cache
+.DS_Store
+Thumbs.db
+
+# =============================================================================
+# PROCESS AND SERVICE FILES
+# =============================================================================
+*.pid
+*.lock
+*.socket
+multi-mcp.pid
+neo4j-startup.log
+
+# =============================================================================
+# USER-SPECIFIC CONFIGURATION
+# =============================================================================
+# Keep template versions but ignore user-specific instances
+settings.local.json
+config/local/
+local/
+**/local/
+**/*.local.*
+
+# =============================================================================
+# MEMORY AND STATE DATA
+# =============================================================================
+# Memory system data (project-specific, not shared)
+graphiti-memories/
+project-memories/
+session-memories/
+mcp-state/
+todos/
+graphiti-hook.log
+graphiti-debug.log
+
+# =============================================================================
+# GENERATED AND ARCHIVED FILES
+# =============================================================================
+DEPRECATED_ARCHIVE_*/
+archive/
+backup/
+*.backup
+architecture-snapshots/
+dependency-graphs/
+
+# =============================================================================
+# IDE AND EDITOR FILES
+# =============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim/
+
+# =============================================================================
+# SENSITIVE FILES (if any exist)
+# =============================================================================
+# These should contain sanitized versions only
+secrets/
+keys/
+tokens/
+.env.local
+.env.production
+*.key
+*.pem
+*.p12
+*.crt
+
+# =============================================================================
+# LARGE GENERATED FILES
+# =============================================================================
+# Keep smaller reference files, ignore large generated ones
+node_modules/
+venv/
+*.zip
+*.tar.gz
+*.rar
+
+# =============================================================================
+# KEEP THESE IMPORTANT FILES
+# =============================================================================
+# Force include critical configuration files even if they match patterns
+!README.md
+!CLAUDE.md
+!settings.json
+!settings-multi-mcp.json
+!memory-config.json
+!COMPLETE_SETUP_GUIDE.md
+!QUICK_REFERENCE.md
+!**/README.md
+!docs/**/*.md
+
+# =============================================================================
+# DEVELOPMENT WORKFLOW FILES TO INCLUDE
+# =============================================================================
+# These are important for functionality and should be shared
+!hooks/
+!slash-commands/
+!commands/
+!*.sh
+!*.py
+!*.json
+!*.md
+
+# =============================================================================
+# PLATFORM SPECIFIC
+# =============================================================================
+# macOS
+.AppleDouble
+.LSOverride
+Icon
+
+# Windows
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.fuse_hidden*
+.directory
+.Trash-*

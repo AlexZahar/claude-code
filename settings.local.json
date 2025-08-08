@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(python3:*)",
+      "Bash(FORCE_SNAPSHOT=1 python3 /Users/USERNAME/.claude/hooks/weekly-architecture-snapshot-hook.py)",
+      "Bash(ln:*)",
+      "Bash(/Users/USERNAME/.claude/claude-memory stats)",
+      "Bash(source:*)",
+      "Bash(alias claude-memory='~/.claude/claude-memory')",
+      "Bash(claude-memory stats)",
+      "Bash(~/.claude/claude-memory stats)",
+      "Bash(ls:*)",
+      "Bash(/Users/USERNAME/Projects/mcp/mcp-sequential-thinking/.venv/bin/python -m mcp_sequential_thinking.server)",
+      "Bash(claude mcp:*)",
+      "Bash(uv pip:*)",
+      "Bash(python:*)",
+      "Bash(uv run:*)",
+      "Bash(mcp-sequential-thinking:*)",
+      "Bash(.venv/bin/mcp-sequential-thinking)",
+      "Bash(/Users/USERNAME/Projects/mcp/mcp-sequential-thinking/.venv/bin/mcp-sequential-thinking --help)",
+      "Bash(uv:*)",
+      "Bash(npx mcp-remote:*)",
+      "Bash(curl:*)",
+      "Bash(timeout:*)",
+      "Bash(grep:*)",
+      "Bash(/Users/USERNAME/.local/bin/uv:*)"
+    ],
+    "deny": []
+  }
+}
