@@ -1,135 +1,113 @@
 # Claude Code Enhanced Configuration
-# Sophisticated Development Environment with Signal Integration
 
-Transform your Claude Code into a **proactive development partner** with automatic quality assurance, persistent memory, intelligent workflow orchestration, and Signal notifications.
+Transform your Claude Code CLI into a powerful development environment with intelligent automation, persistent memory, and semantic code understanding.
 
-## 🚀 Getting Started
-
-### New to this enhanced system?
-**Start here:** [`COMPLETE_SETUP_GUIDE.md`](./COMPLETE_SETUP_GUIDE.md)  
-*Complete step-by-step instructions from zero to fully functional*
-
-### Quick setup?
-**Use this:** [`QUICK_REFERENCE.md`](./QUICK_REFERENCE.md)  
-*Essential commands and configuration*
-
-### Already have it working?
-**Just need:** Environment variable: `export OPENAI_API_KEY="your-key"`
-
-## 📚 Documentation
-
-| Document | Purpose | When to Use |
-|----------|---------|-------------|
-| **[COMPLETE_SETUP_GUIDE.md](./COMPLETE_SETUP_GUIDE.md)** | Full installation guide | First-time setup |
-| **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** | Commands & troubleshooting | Daily reference |
-| **[PEER_SHARING_AUDIT_REPORT.md](./PEER_SHARING_AUDIT_REPORT.md)** | System architecture analysis | Understanding the system |
-| **[docs/SERENA_MCP_SETUP.md](./docs/SERENA_MCP_SETUP.md)** | Serena integration | Semantic code analysis |
-| **[docs/CONTEXT7_DOCUMENTATION_GUIDE.md](./docs/CONTEXT7_DOCUMENTATION_GUIDE.md)** | Context7 integration | Documentation management |
-
-## ⚡ What This Enhanced System Provides
-
-### Automatic Workflow Intelligence
-- **Prevents common mistakes** before they happen
-- **Routes tools intelligently** (Serena for code, Context7 for docs)
-- **Builds knowledge** across all your coding sessions
-- **Enforces best practices** automatically
-
-### 13 Custom Slash Commands
-```
-/remember [text]        /recall [query]         /compact
-/gemini-overview       /gemini-analyze         /gemini-security  
-/gemini-performance    /context7-docs          /gemini-review
-```
-
-### Persistent Memory System
-- Remembers everything across sessions
-- Searchable knowledge graph
-- Automatic context building
-- Project-aware intelligence
-
-## 📱 Signal Integration (Original Feature)
-
-When you start a new Claude Code session, I will:
-
-1. **Send a notification** to your phone that a new session has started
-2. **Include the project name** you're working on
-3. **Request permission** via Signal (Y/N) for sensitive operations like:
-   - Database migrations
-   - File deletions
-   - System configuration changes
-   - Production deployments
-
-### Signal Setup Requirements
-1. Signal must be configured in `~/Projects/boardlens/boardlens-python-api/`
-2. Environment variables set:
-   - `SIGNAL_SENDER` - Your signal-cli number
-   - `SIGNAL_RECIPIENT` - Your personal phone number
-
-### Testing Signal Integration
-```bash
-cd ~/Projects/boardlens/boardlens-python-api
-python3 -c "from signal_notify import notify_task_complete; notify_task_complete('Test from Claude Code')"
-```
-
-## 🧪 Quick System Test
+## 🚀 Quick Setup
 
 ```bash
-# 1. Verify environment
-echo $OPENAI_API_KEY
+# Install to ~/.claude directory
+git clone https://github.com/AlexZahar/claude-code.git ~/.claude
+cd ~/.claude
 
-# 2. Test memory system  
+# Set your API key
+export OPENAI_API_KEY="your-key-here"
+
+# Run installation
+./install.sh
+
+# Test it works
 claude code
-/remember This is a test of the memory system
-/recall test
-
-# 3. Success if you see your memory returned!
 ```
 
-## 🎯 System Status
+## ✨ What You Get
 
-- ✅ **Security:** API keys use environment variables
-- ✅ **Memory:** Graphiti with Neo4j backend  
-- ✅ **Hooks:** Complete workflow orchestration
-- ✅ **Commands:** 13 custom slash commands
-- ✅ **Signal:** Notification integration active
-- ✅ **Documentation:** Comprehensive guides
-- ✅ **Peer Ready:** Clean, shareable configuration
+### **Smart Automation**
+- **Pre-tool validation** - Prevents wrong tool usage
+- **Impact analysis** - Shows dependencies before changes
+- **Quality checks** - Reviews code for consistency
 
-## 📁 Directory Structure
+### **Persistent Memory**
+- **Cross-session memory** - Remembers your work
+- **Smart search** - Find past solutions instantly
+- **Auto-capture** - No manual memory management
+
+### **Enhanced Tools**
+- **Serena MCP** - Semantic code analysis
+- **Context7 MCP** - Documentation management
+- **Gemini CLI** - Large-context analysis
+- **Custom commands** - 13 specialized slash commands
+
+## 📁 Structure
 
 ```
 ~/.claude/
-├── README.md                     # This file
-├── COMPLETE_SETUP_GUIDE.md       # Full setup instructions  
-├── QUICK_REFERENCE.md            # Essential commands
-├── CLAUDE.md                     # Core behavior instructions
-├── claude_session_notify.py      # Signal integration
-├── hooks.json                    # Hook configuration
-├── memory-config.json            # Memory settings
-├── settings.json                 # MCP configuration
-├── hooks/                        # Workflow automation scripts
-├── memory/                       # Memory system and Graphiti
-├── mcp/                         # MCP management
-├── slash-commands/              # Custom command definitions
-├── commands/                    # Command implementations
-└── docs/                        # Additional documentation
+├── CLAUDE.md              # Core behavior instructions
+├── settings.json          # MCP server configuration
+├── memory-config.json     # Memory system settings
+├── install.sh            # One-click installer
+├── hooks/                # Automation scripts
+├── commands/             # Custom slash commands
+└── slash-commands/       # Command implementations
 ```
 
-## 🛟 Need Help?
+## 🔧 Core Commands
 
-1. **Setup Issues:** See [`COMPLETE_SETUP_GUIDE.md`](./COMPLETE_SETUP_GUIDE.md) troubleshooting section
-2. **Command Reference:** See [`QUICK_REFERENCE.md`](./QUICK_REFERENCE.md)  
-3. **System Understanding:** See [`PEER_SHARING_AUDIT_REPORT.md`](./PEER_SHARING_AUDIT_REPORT.md)
+```bash
+/remember [text]          # Save to memory
+/recall [query]           # Search memory
+/gemini-overview         # Project analysis
+/gemini-security         # Security audit
+/context7-docs           # Search docs
+```
 
-## 🔒 Privacy Note
+## 🛠️ Requirements
 
-- Signal notifications only work when properly configured
-- No notifications are sent if Signal setup is missing
-- All notifications go only to your configured phone number
-- Memory system data stays local (Neo4j database)
-- API keys are managed via environment variables
+- **Claude Code CLI** (latest version)
+- **Docker** (for Neo4j memory system)
+- **Python 3.8+**
+- **Git**
+
+## ⚙️ Configuration
+
+The system works with environment variables:
+
+```bash
+export OPENAI_API_KEY="your-key"
+export GEMINI_API_KEY="your-gemini-key"  # Optional
+```
+
+## 🧠 Memory System
+
+Automatic knowledge graph that:
+- Remembers all your coding sessions
+- Learns from your patterns
+- Provides instant search across projects
+- No manual memory management needed
+
+## 🔒 Security
+
+- ✅ No hardcoded secrets
+- ✅ Environment variables only
+- ✅ No personal data in repository
+- ✅ Safe for team sharing
+
+## 📚 Documentation
+
+- `CLAUDE.md` - Complete behavior instructions
+- `memory-config.json` - Memory system tuning
+- `hooks/` - Automation script documentation
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Make your changes
+3. Test with `claude code`
+4. Submit a pull request
+
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-**This enhanced system will transform your Claude Code experience.**  
-Start with the setup guide and enjoy enhanced productivity! 🚀
+**Ready to supercharge your Claude Code experience!** 🚀
