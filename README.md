@@ -13,15 +13,33 @@ Transform your Claude Code CLI into a powerful development environment featuring
 - Optimized chunking preventing timeouts
 
 **2. 🔄 Multi-MCP Integration**
-- **Serena MCP**: Semantic code understanding at symbol level
-- **Context7 MCP**: Curated documentation management
-- **Sequential Thinking MCP**: Chains complex reasoning with memory
+- **Serena MCP**: Semantic code understanding & RAG codebase search
+- **Sequential Thinking MCP**: Complex reasoning connected to graph memory  
+- **Additional MCPs**: Context7, GitHub, Filesystem, and more
 
 **3. ⚡ Smart Automation Hooks**
 - Pre-tool validation prevents wrong tool usage
 - Impact analysis shows dependencies before changes
 - Quality checks review code for consistency
 - Memory capture saves everything important
+
+---
+
+## 📦 Core MCP Components (Local Tools)
+
+This system integrates three powerful local MCP servers:
+
+| Component | Purpose | GitHub Repository |
+|-----------|---------|------------------|
+| **🧠 Graphiti** | Local graph memory with Neo4j backend | [getzep/graphiti](https://github.com/getzep/graphiti) |
+| **🔄 Sequential Thinking** | Complex reasoning connected to graph memory | [arben-adm/mcp-sequential-thinking](https://github.com/arben-adm/mcp-sequential-thinking) |
+| **⚡ Serena** | Local RAG codebase & semantic search | [oraios/serena](https://github.com/oraios/serena) |
+
+> **Why Local MCP Tools?**
+> - 🔒 **Complete Privacy**: All data stays on your machine
+> - ⚡ **Zero Latency**: No network calls for core operations  
+> - 🧠 **Superior Context**: Semantic search beats regular text search
+> - 💾 **Persistent Memory**: Knowledge graph grows with every session
 
 ---
 
@@ -148,10 +166,10 @@ export GEMINI_API_KEY="your-gemini-key"  # Optional for enhanced analysis
 - **UserPromptSubmit**: Special command handling
 
 ### **Multi-MCP Integration**
-- **Serena**: Semantic code analysis and precise editing
-- **Context7**: Curated documentation search
-- **Sequential Thinking**: Complex reasoning with memory access
-- **Unified Proxy**: Single endpoint managing all services
+- **Serena**: Local RAG codebase search & semantic code analysis
+- **Sequential Thinking**: Complex reasoning with graph memory access
+- **Graphiti**: Persistent knowledge graph with Neo4j backend
+- **Unified Proxy**: Single endpoint managing all MCP services
 
 ---
 
