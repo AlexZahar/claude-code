@@ -35,6 +35,11 @@ This system integrates three powerful local MCP servers:
 | **🔄 Sequential Thinking** | Complex reasoning connected to graph memory | [arben-adm/mcp-sequential-thinking](https://github.com/arben-adm/mcp-sequential-thinking) |
 | **⚡ Serena** | Local RAG codebase & semantic search | [oraios/serena](https://github.com/oraios/serena) |
 
+> **⚠️ Important Setup Notes:**
+> - **Graphiti**: Do NOT set up as MCP with stdio - the MCP connection is broken. Use our local scripts with SSE instead (included in this package)
+> - **Sequential Thinking**: Set up as standard MCP server  
+> - **Serena**: Set up as standard MCP server
+
 > **Why Local MCP Tools?**
 > - 🔒 **Complete Privacy**: All data stays on your machine
 > - ⚡ **Zero Latency**: No network calls for core operations  
@@ -73,6 +78,7 @@ cd ~/.claude
 export OPENAI_API_KEY="your-key-here"
 
 # Initialize Neo4j memory system (requires Docker)
+# NOTE: This uses our custom Graphiti integration, NOT the broken MCP stdio connection
 ./initialize-graphiti.sh
 
 # Test it works
