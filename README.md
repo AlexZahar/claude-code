@@ -104,15 +104,17 @@ claude code
 ### **Memory System Components**
 - `initialize-graphiti.sh` - One-command Neo4j setup
 - `graphiti-flush.sh` - Memory management utilities
-- Python helpers for async processing
+- `graphiti-hook.sh` - Main memory capture system
+- `hooks/` directory with Python memory automation scripts
 
-### **Custom Commands (13 total)**
+### **Custom Commands (17+ total)**
 - `/remember [text]` - Save to memory
 - `/recall [query]` - Search memory  
 - `/gemini-overview` - Project analysis
 - `/gemini-security` - Security audit
+- `/gemini-performance` - Performance analysis
 - `/context7-docs` - Search documentation
-- And 8 more specialized commands...
+- Plus 11+ additional analysis and management commands...
 
 ---
 
@@ -184,13 +186,24 @@ export GEMINI_API_KEY="your-gemini-key"  # Optional for enhanced analysis
 ```
 ~/.claude/
 ├── README.md              # This guide
-├── CLAUDE.md              # Complete behavior instructions  
+├── CLAUDE.md              # Complete behavior instructions (36KB)
+├── LICENSE                # MIT license
 ├── settings.json          # MCP configuration with hooks
+├── settings-multi-mcp.json # Multi-MCP proxy configuration  
+├── settings.local.json    # Local overrides
 ├── memory-config.json     # Memory system settings
-├── install.sh            # One-click installer
-├── hooks/                # Core automation scripts
-├── commands/             # Slash command documentation
-└── slash-commands/       # Command implementations
+├── install.sh            # Installation script
+├── hooks/                 # Memory automation (2 Python scripts)
+├── commands/              # Command documentation (14 files)
+├── slash-commands/        # Command implementations (11 .md + 3 .sh)
+├── context7-hooks.sh      # Context7 MCP integration
+├── documentation-hooks.sh # Documentation search hooks
+├── gemini-hooks.sh        # Code analysis automation
+├── serena-hooks.sh        # Semantic search enforcement
+├── graphiti-hook.sh       # Memory capture system
+├── graphiti-flush.sh      # Memory management utilities
+├── initialize-graphiti.sh # Neo4j setup script
+└── mcp-session-hook-multi.sh # MCP session management
 ```
 
 ---
@@ -224,15 +237,6 @@ export GEMINI_API_KEY="your-gemini-key"  # Optional for enhanced analysis
 ```bash
 /context7-docs "React hooks"  # Search curated documentation
 ```
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Make your changes  
-3. Test with `claude code`
-4. Submit a pull request
 
 ---
 
