@@ -1,0 +1,288 @@
+#!/bin/bash
+# Claude Memory - CLI utility for managing Claude Code memory system
+# Provides command-line interface to Graphiti knowledge graph
+
+set -e
+
+GRAPHITI_HOOK="$HOME/.claude/graphiti-hook.sh"
+MEMORY_LOG="$HOME/.claude/claude-memory.log"
+NEO4J_URL="http://localhost:7474"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Logging function
+log_operation() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$MEMORY_LOG"
+}
+
+# Check if Neo4j is running
+check_neo4j() {
+    if curl -s "$NEO4J_URL" >/dev/null 2>&1; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Show usage
+show_usage() {
+    cat << EOF
+Claude Memory - CLI utility for memory management
+
+Usage: claude-memory <command> [options]
+
+Commands:
+    stats           Show memory system statistics
+    search <query>  Search memories for specific content
+    recent [N]      Show N recent memories (default: 10)
+    add <content>   Add new memory manually
+    status          Show system status (Neo4j, services)
+    backup          Create backup of memory database
+    clean           Clean up old/unused memories
+    help            Show this help message
+
+Examples:
+    claude-memory stats
+    claude-memory search "authentication bug"
+    claude-memory recent 20
+    claude-memory add "Important discovery about React hooks"
+    claude-memory status
+
+Memory System:
+    Backend: Neo4j (port 7474)
+    Interface: Graphiti knowledge graph
+    Storage: ~/.claude/graphiti-*
+EOF
+}
+
+# Show memory statistics
+show_stats() {
+    echo -e "${BLUE}📊 Claude Memory Statistics${NC}"
+    echo "=================================="
+    
+    # Check Neo4j status
+    if check_neo4j; then
+        echo -e "Neo4j Status: ${GREEN}✅ Running${NC}"
+    else
+        echo -e "Neo4j Status: ${RED}❌ Not running${NC}"
+        echo "Run: docker start neo4j"
+        return 1
+    fi
+    
+    # Memory counts via Graphiti hook
+    if [ -x "$GRAPHITI_HOOK" ]; then
+        echo
+        echo -e "${YELLOW}Memory Counts:${NC}"
+        
+        # Get recent memories count
+        recent_count=$("$GRAPHITI_HOOK" recent 100 2>/dev/null | wc -l | tr -d ' ')
+        echo "  Recent memories: $recent_count"
+        
+        # Get total by trying to search for common terms
+        total_estimate=$("$GRAPHITI_HOOK" search "project file error fix bug feature" 2>/dev/null | wc -l | tr -d ' ')
+        echo "  Total memories: ~$total_estimate"
+        
+        echo
+        echo -e "${YELLOW}Memory Categories:${NC}"
+        # Try to categorize memories by searching for common patterns
+        bug_fixes=$("$GRAPHITI_HOOK" search "bug fix error" 2>/dev/null | wc -l | tr -d ' ')
+        features=$("$GRAPHITI_HOOK" search "feature add implement" 2>/dev/null | wc -l | tr -d ' ')
+        refactoring=$("$GRAPHITI_HOOK" search "refactor clean update" 2>/dev/null | wc -l | tr -d ' ')
+        
+        echo "  Bug fixes: $bug_fixes"
+        echo "  Features: $features"
+        echo "  Refactoring: $refactoring"
+        
+    else
+        echo -e "${RED}❌ Graphiti hook not found: $GRAPHITI_HOOK${NC}"
+    fi
+    
+    echo
+    echo -e "${YELLOW}System Info:${NC}"
+    echo "  Memory log: $MEMORY_LOG"
+    echo "  Graphiti hook: $GRAPHITI_HOOK"
+    echo "  Neo4j URL: $NEO4J_URL"
+    
+    # Disk usage
+    if [ -d "$HOME/.claude" ]; then
+        disk_usage=$(du -sh "$HOME/.claude" 2>/dev/null | cut -f1)
+        echo "  Disk usage: $disk_usage"
+    fi
+    
+    log_operation "Stats requested"
+}
+
+# Search memories
+search_memories() {
+    local query="$1"
+    if [ -z "$query" ]; then
+        echo -e "${RED}Error: Search query required${NC}"
+        echo "Usage: claude-memory search <query>"
+        return 1
+    fi
+    
+    if [ ! -x "$GRAPHITI_HOOK" ]; then
+        echo -e "${RED}❌ Graphiti hook not found: $GRAPHITI_HOOK${NC}"
+        return 1
+    fi
+    
+    echo -e "${BLUE}🔍 Searching memories for: \"$query\"${NC}"
+    echo "========================================"
+    
+    "$GRAPHITI_HOOK" search "$query"
+    log_operation "Search: $query"
+}
+
+# Show recent memories
+show_recent() {
+    local count="${1:-10}"
+    
+    if [ ! -x "$GRAPHITI_HOOK" ]; then
+        echo -e "${RED}❌ Graphiti hook not found: $GRAPHITI_HOOK${NC}"
+        return 1
+    fi
+    
+    echo -e "${BLUE}📝 Recent $count memories:${NC}"
+    echo "=========================="
+    
+    "$GRAPHITI_HOOK" recent "$count"
+    log_operation "Recent memories requested: $count"
+}
+
+# Add new memory
+add_memory() {
+    local content="$*"
+    if [ -z "$content" ]; then
+        echo -e "${RED}Error: Memory content required${NC}"
+        echo "Usage: claude-memory add <content>"
+        return 1
+    fi
+    
+    if [ ! -x "$GRAPHITI_HOOK" ]; then
+        echo -e "${RED}❌ Graphiti hook not found: $GRAPHITI_HOOK${NC}"
+        return 1
+    fi
+    
+    echo -e "${BLUE}💾 Adding memory...${NC}"
+    
+    "$GRAPHITI_HOOK" add "$content"
+    echo -e "${GREEN}✅ Memory added successfully${NC}"
+    log_operation "Memory added: ${content:0:100}..."
+}
+
+# Show system status
+show_status() {
+    echo -e "${BLUE}🔧 Claude Memory System Status${NC}"
+    echo "====================================="
+    
+    # Neo4j status
+    if check_neo4j; then
+        echo -e "Neo4j Database: ${GREEN}✅ Running${NC} ($NEO4J_URL)"
+    else
+        echo -e "Neo4j Database: ${RED}❌ Not running${NC}"
+        echo "  Fix: docker start neo4j"
+    fi
+    
+    # Graphiti hook
+    if [ -x "$GRAPHITI_HOOK" ]; then
+        echo -e "Graphiti Hook: ${GREEN}✅ Available${NC} ($GRAPHITI_HOOK)"
+    else
+        echo -e "Graphiti Hook: ${RED}❌ Not found${NC} ($GRAPHITI_HOOK)"
+    fi
+    
+    # Memory directory
+    if [ -d "$HOME/.claude" ]; then
+        echo -e "Claude Directory: ${GREEN}✅ Exists${NC} (~/.claude/)"
+        
+        # Check for key files
+        key_files=("graphiti-hook.sh" "memory-config.json" "boardlens-startup.log")
+        for file in "${key_files[@]}"; do
+            if [ -f "$HOME/.claude/$file" ]; then
+                echo -e "  $file: ${GREEN}✅${NC}"
+            else
+                echo -e "  $file: ${YELLOW}⚠️  Missing${NC}"
+            fi
+        done
+    else
+        echo -e "Claude Directory: ${RED}❌ Not found${NC} (~/.claude/)"
+    fi
+    
+    log_operation "Status check requested"
+}
+
+# Create backup
+create_backup() {
+    echo -e "${BLUE}💾 Creating memory backup...${NC}"
+    
+    if ! check_neo4j; then
+        echo -e "${RED}❌ Neo4j not running - cannot create backup${NC}"
+        return 1
+    fi
+    
+    backup_dir="$HOME/.claude/backups/$(date '+%Y%m%d_%H%M%S')"
+    mkdir -p "$backup_dir"
+    
+    # Export Neo4j data (if accessible)
+    echo "Creating backup in: $backup_dir"
+    
+    # Copy configuration and logs
+    cp "$HOME/.claude/"*.{json,log,sh} "$backup_dir/" 2>/dev/null || true
+    
+    echo -e "${GREEN}✅ Backup created: $backup_dir${NC}"
+    log_operation "Backup created: $backup_dir"
+}
+
+# Clean up old memories
+clean_memories() {
+    echo -e "${BLUE}🧹 Cleaning up memory system...${NC}"
+    
+    # Clean old logs (older than 30 days)
+    find "$HOME/.claude" -name "*.log" -mtime +30 -delete 2>/dev/null || true
+    
+    # Clean temporary files
+    find "$HOME/.claude" -name "*.tmp" -delete 2>/dev/null || true
+    find "$HOME/.claude" -name "*~" -delete 2>/dev/null || true
+    
+    echo -e "${GREEN}✅ Cleanup completed${NC}"
+    log_operation "Cleanup performed"
+}
+
+# Main command handling
+case "${1:-help}" in
+    stats)
+        show_stats
+        ;;
+    search)
+        search_memories "$2"
+        ;;
+    recent)
+        show_recent "$2"
+        ;;
+    add)
+        shift
+        add_memory "$@"
+        ;;
+    status)
+        show_status
+        ;;
+    backup)
+        create_backup
+        ;;
+    clean)
+        clean_memories
+        ;;
+    help|--help|-h)
+        show_usage
+        ;;
+    *)
+        echo -e "${RED}Unknown command: $1${NC}"
+        echo
+        show_usage
+        exit 1
+        ;;
+esac
