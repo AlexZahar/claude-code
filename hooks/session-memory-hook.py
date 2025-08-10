@@ -168,7 +168,12 @@ except Exception as e:
             
             # Run the temp script
             project_dir = os.path.join(os.environ['GIT_CLONE_DIR'], "graphiti/mcp_server")
-            result = subprocess.run(["uv", "run", "--isolated", 
+            uv_path = shutil.which("uv")
+            if uv_path is None:
+                print("[Memory Hook] Error: 'uv' executable not found in PATH.")
+                temp_script.unlink()
+                return False
+            result = subprocess.run([uv_path, "run", "--isolated", 
                                 "--directory", project_dir, 
                                 "--project", ".", "python", str(temp_script)], 
                                 capture_output=True, text=True, timeout=10)
