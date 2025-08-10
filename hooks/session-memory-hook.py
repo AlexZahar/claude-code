@@ -68,7 +68,7 @@ def create_memory_documentation(session_context, hook_type="session_end"):
 **MCP Configuration Status:**
 - All MCP servers moved to global user scope using `claude mcp add --scope user`
 - Fixed sequential-thinking server path (was broken shebang, now uses Python -m)
-- Fixed graphiti-memory server uv path (was /Users/zahar/.local/bin/uv, now /opt/homebrew/bin/uv)
+- Fixed graphiti-memory server uv path (was /Users/zahar/.local/bin/uv, now $(which uv))
 - Environment settings preserved in ~/.claude/settings.json for enhanced thinking
 - Cleaned up old mcpServers section from settings.json
 
@@ -81,8 +81,8 @@ def create_memory_documentation(session_context, hook_type="session_end"):
 6. github: npx -y @modelcontextprotocol/server-github (with PAT)
 7. brave-search: npx -y @modelcontextprotocol/server-brave-search (with API key)
 8. mcp-server-firecrawl: npx -y mcp-server-firecrawl (with API key)
-9. sequential-thinking: /Users/zahar/Projects/mcp/mcp-sequential-thinking/.venv/bin/python -m mcp_sequential_thinking.server
-10. graphiti-memory: /opt/homebrew/bin/uv run --isolated --directory /Users/zahar/Projects/mcp/graphiti/mcp_server --project . graphiti_mcp_server.py --transport stdio (with Neo4j and OpenAI credentials)
+9. sequential-thinking: $GIT_CLONE_DIR/mcp-sequential-thinking/.venv/bin/python -m mcp_sequential_thinking.server
+10. graphiti-memory: $(which uv) run --isolated --directory $GIT_CLONE_DIR/graphiti/mcp_server --project . graphiti_mcp_server.py --transport stdio (with Neo4j and OpenAI credentials)
 
 ## Current State
 **Configuration Files:**
@@ -146,7 +146,9 @@ def store_to_graphiti_memory(documentation):
             temp_script.write_text(f'''
 import sys
 import os
-sys.path.insert(0, "/Users/zahar/Projects/mcp/graphiti/mcp_server")
+
+project_dir = os.path.join(os.environ['GIT_CLONE_DIR'], "mcp/graphiti/mcp_server")
+sys.path.insert(0, project_dir)
 
 # Set environment variables for graphiti
 os.environ["NEO4J_URI"] = "bolt://localhost:7687"
@@ -165,10 +167,11 @@ except Exception as e:
 ''')
             
             # Run the temp script
-            result = subprocess.run(["/opt/homebrew/bin/uv", "run", "--isolated", 
-                                   "--directory", "/Users/zahar/Projects/mcp/graphiti/mcp_server", 
-                                   "--project", ".", "python", str(temp_script)], 
-                                  capture_output=True, text=True, timeout=10)
+            project_dir = os.path.join(os.environ['GIT_CLONE_DIR'], "mcp/graphiti/mcp_server")
+            result = subprocess.run(["uv", "run", "--isolated", 
+                                "--directory", project_dir, 
+                                "--project", ".", "python", str(temp_script)], 
+                                capture_output=True, text=True, timeout=10)
             
             # Clean up temp script
             temp_script.unlink()

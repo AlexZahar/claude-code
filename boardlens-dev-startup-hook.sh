@@ -45,7 +45,7 @@ log_message "🧠 Starting individual MCP servers..."
 # Start Graphiti MCP Server (port 8889)
 if ! curl -s http://localhost:8889 >/dev/null 2>&1; then
     log_message "🔄 Starting Graphiti MCP server..."
-    cd "$HOME/Projects/boardlens/boardlens-python-api" && \
+    cd "$GIT_CLONE_DIR/boardlens-python-api" && \
     nohup uv run --project graphiti-mcp main.py --port 8889 --host 127.0.0.1 > ~/.claude/graphiti-mcp.log 2>&1 &
     echo $! > ~/.claude/graphiti-mcp.pid
     sleep 2
@@ -54,10 +54,10 @@ else
 fi
 
 # Start Serena MCP Server (if configured)
-if [ -d "$HOME/Projects/serena" ]; then
+if [ -d "$GIT_CLONE_DIR/serena" ]; then
     if ! pgrep -f "serena.*mcp" >/dev/null; then
         log_message "🔄 Starting Serena MCP server..."
-        cd "$HOME/Projects/serena" && \
+        cd "$GIT_CLONE_DIR/serena" && \
         nohup uv run serena --mcp > ~/.claude/serena-mcp.log 2>&1 &
         echo $! > ~/.claude/serena-mcp.pid
         sleep 2

@@ -4,8 +4,8 @@
 # This hook captures the compacted conversation summary and stores it as a memory
 # Now runs AFTER the compact operation completes (PostToolUse)
 
-GRAPHITI_HOOK="/Users/zahar/.claude/graphiti-hook.sh"
-DEBUG_LOG="/Users/zahar/.claude/graphiti-debug.log"
+GRAPHITI_HOOK="$HOME/.claude/graphiti-hook.sh"
+DEBUG_LOG="$HOME/.claude/graphiti-debug.log"
 
 # Function to log debug messages
 log_debug() {
@@ -38,7 +38,7 @@ if [ "$TOOL_NAME" = "Compact" ]; then
         "$GRAPHITI_HOOK" add "$memory"
         
         # Also flush any pending batches
-        /opt/homebrew/bin/uv run python /Users/zahar/.claude/graphiti-batcher.py flush >/dev/null 2>&1
+        $(which uv) run python $HOME/.claude/graphiti-batcher.py flush >/dev/null 2>&1
         
         echo "📝 Compacted conversation summary saved to memory"
     else

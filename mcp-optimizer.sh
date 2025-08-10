@@ -4,12 +4,12 @@
 
 set -e
 
-PROXY_DIR="/Users/zahar/Projects/multi-mcp"
+PROXY_DIR="$GIT_CLONE_DIR/multi-mcp"
 PROXY_CONFIG="claude-code-production.json"
 PROXY_PORT="8080"
 PROXY_PID_FILE="/tmp/multi-mcp-proxy.pid"
-CLAUDE_SETTINGS="/Users/zahar/.claude/settings.json"
-LOG_FILE="/Users/zahar/.claude/mcp-optimizer.log"
+CLAUDE_SETTINGS="$HOME/.claude/settings.json"
+LOG_FILE="$HOME/.claude/mcp-optimizer.log"
 
 # Colors for output
 RED='\033[0;31m'
@@ -76,7 +76,7 @@ start_proxy() {
     
     # Start the proxy in background using virtual environment
     if [ -f "$PROXY_DIR/.venv/bin/python3" ]; then
-        nohup "$PROXY_DIR/.venv/bin/python3" main.py --transport sse --host 127.0.0.1 --port "$PROXY_PORT" --config "$PROXY_CONFIG" > /Users/zahar/.claude/multi-mcp.log 2>&1 &
+        nohup "$PROXY_DIR/.venv/bin/python3" main.py --transport sse --host 127.0.0.1 --port "$PROXY_PORT" --config "$PROXY_CONFIG" > "$HOME/.claude/multi-mcp.log" 2>&1 &
     else
         log "❌ Virtual environment not found at $PROXY_DIR/.venv"
         return 1
