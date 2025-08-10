@@ -147,7 +147,7 @@ def store_to_graphiti_memory(documentation):
 import sys
 import os
 
-project_dir = os.path.join(os.environ['GIT_CLONE_DIR'], "mcp/graphiti/mcp_server")
+project_dir = os.path.join(os.environ['GIT_CLONE_DIR'], "graphiti/mcp_server")
 sys.path.insert(0, project_dir)
 
 # Set environment variables for graphiti
@@ -167,7 +167,7 @@ except Exception as e:
 ''')
             
             # Run the temp script
-            project_dir = os.path.join(os.environ['GIT_CLONE_DIR'], "mcp/graphiti/mcp_server")
+            project_dir = os.path.join(os.environ['GIT_CLONE_DIR'], "graphiti/mcp_server")
             result = subprocess.run(["uv", "run", "--isolated", 
                                 "--directory", project_dir, 
                                 "--project", ".", "python", str(temp_script)], 
