@@ -2,10 +2,10 @@
 # Periodic flush script for Graphiti memory batcher
 # Run this periodically to ensure batches are flushed
 
-GRAPHITI_HOOK="/Users/USERNAME/.claude/graphiti-hook.sh"
-UV_PYTHON="/opt/homebrew/bin/uv run python"
-BATCHER="/Users/USERNAME/.claude/graphiti-batcher.py"
-DEBUG_LOG="/Users/USERNAME/.claude/graphiti-debug.log"
+GRAPHITI_HOOK="$HOME/.claude/graphiti-hook.sh"
+UV_PYTHON="$(which uv) run python"
+BATCHER="$HOME/.claude/graphiti-batcher.py"
+DEBUG_LOG="$HOME/.claude/graphiti-debug.log"
 
 # Log debug message
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] [FLUSH] Running periodic flush" >> "$DEBUG_LOG"

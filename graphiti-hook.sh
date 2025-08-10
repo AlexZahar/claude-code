@@ -4,10 +4,10 @@
 # This script integrates with Claude Code hooks to automatically
 # save memories to the Graphiti knowledge graph.
 
-GRAPHITI_HOOK="/Users/USERNAME/.claude/graphiti-direct-hook.py"
-HOOK_LOG="/Users/USERNAME/.claude/graphiti-hook.log"
-DEBUG_LOG="/Users/USERNAME/.claude/graphiti-debug.log"
-UV_PYTHON="/opt/homebrew/bin/uv run --with graphiti-core python"
+GRAPHITI_HOOK="$HOME/.claude/graphiti-direct-hook.py"
+HOOK_LOG="$HOME/.claude/graphiti-hook.log"
+DEBUG_LOG="$HOME/.claude/graphiti-debug.log"
+UV_PYTHON="$(which uv) run --with graphiti-core python"
 
 # Trivial commands to ignore
 TRIVIAL_COMMANDS=("ls" "cd" "pwd" "echo" "cat" "which" "clear" "head" "tail")
@@ -93,7 +93,7 @@ add_to_graphiti_async() {
     fi
     
     # Queue for background processing (non-blocking)
-    /Users/USERNAME/.claude/memory-queue-manager.sh queue "$content" "$priority" "$project_context"
+    $HOME/.claude/memory-queue-manager.sh queue "$content" "$priority" "$project_context"
     
     log_message "✅ Queued for async processing with metadata: $(echo "$content" | head -c 50)..."
     return 0  # Always return success immediately
@@ -122,7 +122,7 @@ add_to_graphiti() {
     if [ $content_size -gt $max_size ]; then
         log_message "Content too large ($content_size chars), using preprocessor..."
         # Use the memory preprocessor for large content
-        /Users/USERNAME/.claude/memory-preprocessor.sh "$content" "$(get_project_context)"
+        $HOME/.claude/memory-preprocessor.sh "$content" "$(get_project_context)"
         return $?
     fi
     
@@ -238,7 +238,7 @@ assess_and_queue_memory() {
     local assessment_result
     assessment_result=$($UV_PYTHON -c "
 import sys
-sys.path.append('/Users/USERNAME/.claude')
+sys.path.append('$HOME/.claude')
 try:
     from smart_memory_assessor import MemoryAssessor
     assessor = MemoryAssessor()
@@ -378,10 +378,10 @@ on_file_edit() {
     fi
     
     # Add to batcher instead of direct memory
-    $UV_PYTHON "/Users/USERNAME/.claude/graphiti-batcher.py" add_file "$file_path" "$action"
+    $UV_PYTHON "$HOME/.claude/graphiti-batcher.py" add_file "$file_path" "$action"
     
     # Check if we should flush
-    flush_result=$($UV_PYTHON "/Users/USERNAME/.claude/graphiti-batcher.py" flush 2>&1)
+    flush_result=$($UV_PYTHON "$HOME/.claude/graphiti-batcher.py" flush 2>&1)
     if [[ "$flush_result" == "Flushed:"* ]]; then
         summary="${flush_result#Flushed: }"
         add_to_graphiti "$summary"
@@ -415,10 +415,10 @@ on_command_run() {
     fi
     
     # Add to batcher
-    $UV_PYTHON "/Users/USERNAME/.claude/graphiti-batcher.py" add_command "$command" "$exit_code"
+    $UV_PYTHON "$HOME/.claude/graphiti-batcher.py" add_command "$command" "$exit_code"
     
     # Check if we should flush
-    flush_result=$($UV_PYTHON "/Users/USERNAME/.claude/graphiti-batcher.py" flush 2>&1)
+    flush_result=$($UV_PYTHON "$HOME/.claude/graphiti-batcher.py" flush 2>&1)
     if [[ "$flush_result" == "Flushed:"* ]]; then
         summary="${flush_result#Flushed: }"
         add_to_graphiti "$summary"
@@ -507,10 +507,10 @@ case "$1" in
         add_to_graphiti_async "$2" "true" "${3:-normal}"
         ;;
     queue_status|status)
-        /Users/USERNAME/.claude/memory-queue-manager.sh status
+        $HOME/.claude/memory-queue-manager.sh status
         ;;
     start_worker)
-        /Users/USERNAME/.claude/memory-queue-manager.sh start
+        $HOME/.claude/memory-queue-manager.sh start
         ;;
     *)
         echo "Usage: $0 {add|search|search-type|search-filtered|recent|recent-type|file_edit|command_run|discovery|error|git_commit|add_async|status|start_worker} [args...]"

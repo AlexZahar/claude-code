@@ -3,4 +3,4 @@
 # Description: Restart the Multi-MCP proxy
 
 echo "🔄 Restarting Multi-MCP proxy..."
-/Users/USERNAME/.claude/mcp-optimizer.sh restart
+$HOME/.claude/mcp-optimizer.sh restart

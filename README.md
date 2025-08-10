@@ -67,54 +67,103 @@ User Query → Memory system retrieves relevant context
 
 ---
 
+## 🛠️ Prerequisites
+
+- Installed **Claude Code CLI** (latest version)
+- Installed **Docker** (for Neo4j memory system)
+- Installed **Python 3.13+** 
+- Installed **uv** (modern Python package manager)
+- Installed **Git**
+- Cloned **Graphiti** https://github.com/getzep/graphiti
+- Cloned **Sequential Thinking** https://github.com/arben-adm/mcp-sequential-thinking
+- Cloned **Serena** https://github.com/oraios/serena
+- Cloned **Multi MCP** https://github.com/kfirtoledo/multi-mcp
+
+---
+
 ## 🚀 Quick Setup
 
 ```bash
-# Install to ~/.claude directory
-git clone https://github.com/AlexZahar/claude-code.git ~/.claude
-cd ~/.claude
+echo 'export OPENAI_API_KEY="your-openapi-key"' >> ~/.bashrc
+echo 'export GEMINI_API_KEY="your-gemini-key"' >> ~/.bashrc  # Optional for enhanced analysis
+echo 'export GIT_CLONE_DIR="path-where-you-clone-repos"' >> ~/.bashrc
 
-# Set your API key  
-export OPENAI_API_KEY="your-key-here"
+git clone https://github.com/AlexZahar/claude-code.git
+cd claude-code
 
-# Initialize Neo4j memory system (requires Docker)
-# NOTE: This uses our custom Graphiti integration, NOT the broken MCP stdio connection
-./initialize-graphiti.sh
+./install.sh
 
-# Test it works
-claude code
+claude
 ```
 
 ---
 
 ## 📦 What's Included
 
-### **Core Configuration**
+### **Core Configuration Files**
 - `CLAUDE.md` - Complete behavior instructions and workflows
-- `settings.json` - MCP server configuration with hooks
+- `settings.json` - Standard MCP server configuration with hooks
+- `settings-multi-mcp.json` - Multi-MCP proxy configuration
+- `settings.local.json` - Local overrides and customizations
 - `memory-config.json` - Smart filtering & batching rules
-- `install.sh` - One-click installation script
+- `LICENSE` - MIT license file
 
-### **Smart Hooks System**  
-- `gemini-hooks.sh` - Comprehensive code analysis
-- `serena-hooks.sh` - Enforces semantic code search
-- `documentation-hooks.sh` - Redirects to Context7 MCP
-- `graphiti-hook.sh` - Memory capture with optimized chunking
+### **Installation & Setup Scripts**
+- `install.sh` - One-click installation script
+- `initialize-graphiti.sh` - One-command Neo4j setup
+- `multi-mcp-setup.sh` - Multi-MCP proxy installation
+
+### **Smart Hooks System (Core Intelligence)**  
+- `gemini-hooks.sh` - Comprehensive code analysis with Gemini
+- `serena-hooks.sh` - Enforces semantic code search via Serena MCP
+- `documentation-hooks.sh` - Redirects documentation queries to Context7 MCP
+- `context7-hooks.sh` - Context7 MCP integration utilities
+- `graphiti-hook.sh` - Main memory capture system with chunking
+- `compact-memory-hook.sh` - Auto-saves conversation summaries
 
 ### **Memory System Components**
-- `initialize-graphiti.sh` - One-command Neo4j setup
 - `graphiti-flush.sh` - Memory management utilities
-- `graphiti-hook.sh` - Main memory capture system
-- `hooks/` directory with Python memory automation scripts
+- `graphiti-batcher.py` - Intelligent memory batching processor
+- `memory-subagent-request.sh` - Complex memory operations handler
+- `claude-memory` - Memory system utilities
 
-### **Custom Commands (17+ total)**
-- `/remember [text]` - Save to memory
-- `/recall [query]` - Search memory  
-- `/gemini-overview` - Project analysis
-- `/gemini-security` - Security audit
-- `/gemini-performance` - Performance analysis
-- `/context7-docs` - Search documentation
-- Plus 11+ additional analysis and management commands...
+### **Session & Startup Management**
+- `boardlens-dev-startup-hook.sh` - Development environment startup
+- `boardlens-dev-startup-hook-multi.sh` - Multi-MCP startup variant
+- `mcp-session-hook.sh` - Standard MCP session management
+- `mcp-session-hook-multi.sh` - Multi-MCP session management
+
+### **MCP Service Management**
+- `multi-mcp-service.sh` - Multi-MCP proxy service controller
+- `mcp-optimizer.sh` - MCP performance optimization
+- `mcp-cleanup-hook.sh` - Standard MCP cleanup utilities
+- `mcp-cleanup-hook-multi.sh` - Multi-MCP cleanup variant
+
+### **Python Hook Automation** (`hooks/`)
+- `session-memory-hook.py` - Session-level memory capture
+- `code-change-memory-hook.py` - File change tracking
+- `weekly-architecture-snapshot-hook.py` - Periodic codebase analysis
+
+### **Configuration Directories**
+- `config/` - Additional configuration files
+  - `gpt5-optimization.env` - GPT-5 optimization settings
+- `docker/` - Docker-related configurations
+  - `neo4j-optimized.env` - Optimized Neo4j settings
+
+### **Command Documentation** (`commands/`)
+14 comprehensive command guides:
+- `remember.md`, `recall.md` - Memory operations
+- `compact.md` - Conversation management
+- `gemini-*.md` (8 files) - Analysis commands
+- `context7-docs.md` - Documentation search
+
+### **Slash Command Implementations** (`slash-commands/`)
+11 ready-to-use slash commands plus 3 management scripts:
+- `gemini-*.md` (8 files) - Analysis command implementations
+- `context7-docs.md` - Documentation search implementation
+- `mcp-status.sh`, `mcp-restart.sh`, `mcp-cleanup.sh` - MCP management tools
+
+**Total: 50+ files providing a complete AI development environment**
 
 ---
 
@@ -140,21 +189,6 @@ claude code
 - **Runs 100% locally** on your machine
 
 **Result**: A development environment that gets smarter with every use, turning Claude Code into a true coding partner that understands your entire codebase and work history.
-
----
-
-## 🛠️ Requirements
-
-- **Claude Code CLI** (latest version)
-- **Docker** (for Neo4j memory system)
-- **Python 3.8+** 
-- **Git**
-
-### Environment Setup
-```bash
-export OPENAI_API_KEY="your-key"
-export GEMINI_API_KEY="your-gemini-key"  # Optional for enhanced analysis
-```
 
 ---
 

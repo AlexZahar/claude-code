@@ -686,11 +686,11 @@ Claude Code uses a comprehensive hooks system that automatically enhances your w
     "hooks": [
       {
         "type": "command",
-        "command": "/Users/USERNAME/.claude/boardlens-dev-startup-hook.sh"
+        "command": "$HOME/.claude/boardlens-dev-startup-hook.sh"
       },
       {
         "type": "command", 
-        "command": "/Users/USERNAME/.claude/mcp-session-hook.sh"
+        "command": "$HOME/.claude/mcp-session-hook.sh"
       }
     ]
   }
@@ -713,7 +713,7 @@ Claude Code uses a comprehensive hooks system that automatically enhances your w
 "hooks": [
   {
     "type": "command",
-    "command": "HOOK_TYPE=wrong-tool /Users/USERNAME/.claude/serena-hooks.sh"
+    "command": "HOOK_TYPE=wrong-tool $HOME/.claude/serena-hooks.sh"
   }
 ]
 ```
@@ -730,7 +730,7 @@ Claude Code uses a comprehensive hooks system that automatically enhances your w
 "hooks": [
   {
     "type": "command",
-    "command": "HOOK_TYPE=pre-edit /Users/USERNAME/.claude/gemini-hooks.sh"
+    "command": "HOOK_TYPE=pre-edit $HOME/.claude/gemini-hooks.sh"
   }
 ]
 ```
@@ -747,7 +747,7 @@ Claude Code uses a comprehensive hooks system that automatically enhances your w
 "hooks": [
   {
     "type": "command", 
-    "command": "HOOK_TYPE=pre-write /Users/USERNAME/.claude/gemini-hooks.sh"
+    "command": "HOOK_TYPE=pre-write $HOME/.claude/gemini-hooks.sh"
   }
 ]
 ```
@@ -764,7 +764,7 @@ Claude Code uses a comprehensive hooks system that automatically enhances your w
 "hooks": [
   {
     "type": "command",
-    "command": "HOOK_TYPE=pre-websearch /Users/USERNAME/.claude/documentation-hooks.sh" 
+    "command": "HOOK_TYPE=pre-websearch $HOME/.claude/documentation-hooks.sh" 
   }
 ]
 ```
@@ -785,7 +785,7 @@ Claude Code uses a comprehensive hooks system that automatically enhances your w
 "hooks": [
   {
     "type": "command",
-    "command": "sh -c 'if echo \"$TOOL_OUTPUT\" | grep -q \"successfully\"; then HOOK_TYPE=post-edit /Users/USERNAME/.claude/gemini-hooks.sh; fi'"
+    "command": "sh -c 'if echo \"$TOOL_OUTPUT\" | grep -q \"successfully\"; then HOOK_TYPE=post-edit $HOME/.claude/gemini-hooks.sh; fi'"
   }
 ]
 ```
@@ -847,7 +847,7 @@ Claude Code uses a comprehensive hooks system that automatically enhances your w
 "hooks": [
   {
     "type": "command",
-    "command": "/Users/USERNAME/.claude/compact-memory-hook.sh"
+    "command": "$HOME/.claude/compact-memory-hook.sh"
   }
 ]
 ```
@@ -1051,3 +1051,5 @@ ls -la ~/.claude/*hooks.sh
 7. **Continuous Learning**: Memory system gets smarter with every session
 
 The hooks system transforms Claude Code from a reactive tool into a proactive development partner that anticipates needs, prevents mistakes, and builds institutional knowledge automatically.
+
+@~/CLAUDE.md

@@ -2,7 +2,7 @@
 # Multi-MCP Proxy Service Manager
 # Manages the Multi-MCP proxy as a background service for Claude Code
 
-MULTI_MCP_DIR="/Users/zahar/Projects/multi-mcp"
+MULTI_MCP_DIR="$GIT_CLONE_DIR/multi-mcp"
 CONFIG_FILE="claude-code-production.json"
 PID_FILE="$HOME/.claude/multi-mcp.pid"
 LOG_FILE="$HOME/.claude/multi-mcp.log"

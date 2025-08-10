@@ -71,6 +71,21 @@ else
     echo "✅ Neo4j is running!"
 fi
 
+# Create and activate uv virtual environment
+echo "🐍 Setting up Python virtual environment..."
+if [ ! -d ".venv" ]; then
+    echo "Creating uv virtual environment..."
+    uv venv .venv
+    echo "✅ Virtual environment created at .venv"
+else
+    echo "✅ Virtual environment already exists"
+fi
+
+# Activate virtual environment
+echo "Activating virtual environment..."
+source .venv/bin/activate
+echo "✅ Virtual environment activated"
+
 # Install Python dependencies if needed
 echo "📦 Checking Python dependencies..."
 if ! uv pip list 2>/dev/null | grep -q "graphiti-core"; then
@@ -95,6 +110,11 @@ except Exception as e:
     print(f'❌ Error: {e}')
     sys.exit(1)
 "
+
+# Deactivate virtual environment
+echo "🐍 Deactivating virtual environment..."
+deactivate
+echo "✅ Virtual environment deactivated"
 
 echo ""
 echo "🎉 Graphiti Memory System initialized successfully!"

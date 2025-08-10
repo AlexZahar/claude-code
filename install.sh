@@ -47,6 +47,17 @@ fi
 
 echo -e "${GREEN}✅ Python 3 found${NC}"
 
+# Check uv (modern Python package manager)
+if ! command -v uv &> /dev/null; then
+    echo -e "${RED}❌ uv not found. Please install uv for Python package management${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}✅ uv found${NC}"
+
+# Create Claude configuration directory
+echo -e "${BLUE}📁 Setting up Claude configuration directory...${NC}"
+
 # Check for existing Claude configuration
 if [ -d "$CLAUDE_DIR" ]; then
     echo -e "${YELLOW}⚠️  Existing Claude configuration found${NC}"
@@ -59,39 +70,56 @@ if [ -d "$CLAUDE_DIR" ]; then
         echo -e "${RED}❌ Installation cancelled${NC}"
         exit 1
     fi
+else
+    # Create directory structure
+    mkdir -p "$CLAUDE_DIR"
 fi
 
 # Install configuration
 echo -e "${BLUE}📁 Installing enhanced configuration...${NC}"
 
-# Create directory structure
-mkdir -p "$CLAUDE_DIR"/{hooks,config,local,mcp-configs,logs}
-
-# Copy files (assuming we're running from the repo directory)
-if [ -f "CLAUDE.md" ]; then
-    cp -r . "$CLAUDE_DIR/"
-    echo -e "${GREEN}✅ Configuration files copied${NC}"
-else
-    echo -e "${RED}❌ Configuration files not found. Are you running from the repository directory?${NC}"
+# Check if we're in the repository directory
+if [ ! -f "CLAUDE.md" ] || [ ! -f "settings.json" ]; then
+    echo -e "${RED}❌ Error: This script must be run from the claude-code repository directory${NC}"
+    echo -e "${YELLOW}Usage: Run 'cd claude-code && ./install.sh' from the cloned repository${NC}"
     exit 1
 fi
 
-# Update user-specific paths in configuration
-echo -e "${BLUE}🔧 Updating configuration paths...${NC}"
+echo "  Copying core configuration..."
+cp -f CLAUDE.md "$CLAUDE_DIR/"
+cp -f settings.json "$CLAUDE_DIR/"
+cp -f settings-multi-mcp.json "$CLAUDE_DIR/"
+cp -f settings.local.json "$CLAUDE_DIR/"
+cp -f memory-config.json "$CLAUDE_DIR/"
+cp -f LICENSE "$CLAUDE_DIR/"
 
-# Replace USERNAME placeholders with actual username
-if [ -f "$CLAUDE_DIR/settings.json" ]; then
-    sed -i.bak "s|/Users/USERNAME|$HOME|g" "$CLAUDE_DIR/settings.json"
-    rm "$CLAUDE_DIR/settings.json.bak"
-fi
+echo "  Copying hook scripts..."
+cp -f gemini-hooks.sh "$CLAUDE_DIR/"
+cp -f serena-hooks.sh "$CLAUDE_DIR/"
+cp -f documentation-hooks.sh "$CLAUDE_DIR/"
+cp -f context7-hooks.sh "$CLAUDE_DIR/"
+cp -f graphiti-hook.sh "$CLAUDE_DIR/"
+cp -f graphiti-flush.sh "$CLAUDE_DIR/"
 
-if [ -f "$CLAUDE_DIR/settings-multi-mcp.json" ]; then
-    sed -i.bak "s|/Users/USERNAME|$HOME|g" "$CLAUDE_DIR/settings-multi-mcp.json"
-    rm "$CLAUDE_DIR/settings-multi-mcp.json.bak"
-fi
+echo "  Copying utility scripts..."
+cp -f initialize-graphiti.sh "$CLAUDE_DIR/"
+cp -f mcp-session-hook-multi.sh "$CLAUDE_DIR/"
+cp -f multi-mcp-setup.sh "$CLAUDE_DIR/"
+cp -f multi-mcp-service.sh "$CLAUDE_DIR/"
+cp -f boardlens-dev-startup-hook-multi.sh "$CLAUDE_DIR/"
+cp -f mcp-cleanup-hook-multi.sh "$CLAUDE_DIR/"
+
+echo "  Copying directories..."
+cp -rf commands/ "$CLAUDE_DIR/"
+cp -rf slash-commands/ "$CLAUDE_DIR/"
+cp -rf hooks/ "$CLAUDE_DIR/"
+
+echo -e "${GREEN}✅ Configuration files copied${NC}"
 
 # Make scripts executable
 chmod +x "$CLAUDE_DIR"/*.sh
+chmod +x "$CLAUDE_DIR/slash-commands"/*.sh 2>/dev/null || true
+chmod +x "$CLAUDE_DIR/hooks"/*.py 2>/dev/null || true
 
 echo -e "${GREEN}✅ Configuration paths updated${NC}"
 
@@ -122,8 +150,27 @@ if [ -z "$OPENAI_API_KEY" ]; then
     echo -e "${YELLOW}⚠️  OPENAI_API_KEY not set${NC}"
     echo -e "${BLUE}💡 Add this to your shell profile:${NC}"
     echo -e "${BLUE}   export OPENAI_API_KEY=\"your-key-here\"${NC}"
+    exit 1
 else
     echo -e "${GREEN}✅ OPENAI_API_KEY is set${NC}"
+fi
+
+if [ -z "$GEMINI_API_KEY" ]; then
+    echo -e "${YELLOW}⚠️  GEMINI_API_KEY not set${NC}"
+    echo -e "${BLUE}💡 Add this to your shell profile:${NC}"
+    echo -e "${BLUE}   export GEMINI_API_KEY=\"your-key-here\"${NC}"
+    exit 1
+else
+    echo -e "${GREEN}✅ GEMINI_API_KEY is set${NC}"
+fi
+
+if [ -z "$GIT_CLONE_DIR" ]; then
+    echo -e "${YELLOW}⚠️  GIT_CLONE_DIR not set${NC}"
+    echo -e "${BLUE}💡 Add this to your shell profile:${NC}"
+    echo -e "${BLUE}   export GIT_CLONE_DIR=\"your-directory-here\"${NC}"
+    exit 1
+else
+    echo -e "${GREEN}✅ GIT_CLONE_DIR is set${NC}"
 fi
 
 # Installation complete
@@ -132,10 +179,11 @@ echo -e "${GREEN}🎉 Installation Complete!${NC}"
 echo -e "${GREEN}========================${NC}"
 echo ""
 echo -e "${BLUE}📋 Next Steps:${NC}"
-echo "1. Set your OpenAI API key: export OPENAI_API_KEY=\"your-key\""
-echo "2. Test the system: claude code"
-echo "3. Try a slash command: /gemini-overview"
-echo "4. Check the documentation: $CLAUDE_DIR/COMPLETE_SETUP_GUIDE.md"
+echo "1. (if not done) Set your OpenAI API key: export OPENAI_API_KEY=\"your-key\""
+echo "2. (if not done) Set your Gemini API key: export GEMINI_API_KEY=\"your-key\""
+echo "3. Test the system: claude code"
+echo "4. Try a slash command: /gemini-overview"
+echo "5. Check the documentation: $CLAUDE_DIR/CLAUDE.md"
 echo ""
 
 if [ -d "$BACKUP_DIR" ]; then
