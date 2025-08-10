@@ -150,6 +150,7 @@ if [ -z "$OPENAI_API_KEY" ]; then
     echo -e "${YELLOW}⚠️  OPENAI_API_KEY not set${NC}"
     echo -e "${BLUE}💡 Add this to your shell profile:${NC}"
     echo -e "${BLUE}   export OPENAI_API_KEY=\"your-key-here\"${NC}"
+    exit 1
 else
     echo -e "${GREEN}✅ OPENAI_API_KEY is set${NC}"
 fi
@@ -158,6 +159,7 @@ if [ -z "$GEMINI_API_KEY" ]; then
     echo -e "${YELLOW}⚠️  GEMINI_API_KEY not set${NC}"
     echo -e "${BLUE}💡 Add this to your shell profile:${NC}"
     echo -e "${BLUE}   export GEMINI_API_KEY=\"your-key-here\"${NC}"
+    exit 1
 else
     echo -e "${GREEN}✅ GEMINI_API_KEY is set${NC}"
 fi
